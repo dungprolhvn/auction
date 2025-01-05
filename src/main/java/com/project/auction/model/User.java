@@ -19,19 +19,23 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @RequiredArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     @Length(max = 25)
     @Column(unique = true)
     private String username;
 
-    @Length(min = 8, max = 20)
+    @NonNull
+    @Length(min = 8, max = 255)
     private String password;
 
+    @NonNull
     @Email
     @Column(unique = true)
     private String email;

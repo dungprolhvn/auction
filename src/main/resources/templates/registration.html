@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <div th:replace="~{layout :: head}"></div>
+  <title>Register</title>
+</head>
+<body>
+<div th:replace="~{layout :: navbar}"></div>
+<div th:replace="~{layout :: messages}"></div>
+<div class="container">
+  <form class="w-50" method="post" th:action="@{/register}" th:object="${regForm}">
+    <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-danger">
+      <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+    </div>
+    <div class="form-group">
+      <label for="username">Username</label>
+      <input type="text" class="form-control" id="username" th:field="*{username}" required/>
+      <span class="validationError"
+            th:if="${#fields.hasErrors('username')}"
+            th:errors="*{username}"></span>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" class="form-control" id="password" th:field="*{password}" required/>
+      <span class="validationError"
+            th:if="${#fields.hasErrors('password')}"
+            th:errors="*{password}"></span>
+    </div>
+    <div class="form-group">
+      <label for="confirmation">Confirmation</label>
+      <input type="password" class="form-control" id="confirmation" th:field="*{confirmation}" required/>
+      <span class="validationError"
+            th:if="${#fields.hasErrors('confirmation')}"
+            th:errors="*{confirmation}"></span>
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" th:field="*{email}" required/>
+      <span class="validationError"
+            th:if="${#fields.hasErrors('email')}"
+            th:errors="*{email}"></span>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Register</button>
+  </form>
+</div>
+</body>
+</html>
