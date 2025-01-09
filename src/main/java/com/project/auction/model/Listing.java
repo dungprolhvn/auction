@@ -14,29 +14,36 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 @RequiredArgsConstructor
 public class Listing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User auctioneer;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @NonNull
     @Length(min = 5, max = 200)
     private String name;
 
+    @NonNull
     @Length(min = 20, max = 65535)
     private String description;
 
-    @Length(max = 32)
+    @NonNull
+    @Length(max = 256)
     private String image;
 
+    @NonNull
     private BigDecimal startingBid;
 
     private boolean isClosed = false;
