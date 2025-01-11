@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @SessionAttributes({"listingForm", "categories"})
 public class CreateListingController {
-    // TODO: handle post request
     @Autowired
     private CategoryService categoryService;
     @Autowired

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class ListingController {
 
-    ListingService listingService;
+    private final ListingService listingService;
 
     public ListingController(ListingService listingService) {
         this.listingService = listingService;

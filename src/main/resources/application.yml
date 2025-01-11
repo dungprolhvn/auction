@@ -9,3 +9,8 @@ spring:
       ddl-auto: validate
     show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
+
+server:
+  servlet:
+    session:
+      timeout: 15m

@@ -32,4 +32,9 @@ public class ListingServiceImp implements ListingService {
         return listingRepository.getAllByIsClosedFalse();
     }
 
+    @Override
+    public List<Listing> getActiveListingsByCategory(String categoryId) {
+        return listingRepository.getAllByIsClosedFalseAndCategoryId(Long.parseLong(categoryId));
+    }
+
 }
