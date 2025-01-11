@@ -5,6 +5,8 @@ import com.project.auction.repository.ListingRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ListingServiceImp implements ListingService {
 
@@ -24,4 +26,10 @@ public class ListingServiceImp implements ListingService {
             return false;
         }
     }
+
+    @Override
+    public List<Listing> getActiveListings() {
+        return listingRepository.getAllByIsClosedFalse();
+    }
+
 }
