@@ -7,6 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "watch_list")
+@IdClass(WatchListId.class)
 @Getter
 @Setter
 @ToString
