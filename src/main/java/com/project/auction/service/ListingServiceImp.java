@@ -37,4 +37,8 @@ public class ListingServiceImp implements ListingService {
         return listingRepository.getAllByIsClosedFalseAndCategoryId(Long.parseLong(categoryId));
     }
 
+    @Override
+    public Listing getById(Long id) {
+        return listingRepository.getReferenceById(id);
+    }
 }

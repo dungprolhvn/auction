@@ -37,7 +37,7 @@ public class CategoryController {
         List<Listing> listings = listingService.getActiveListingsByCategory(categoryId);
         model.addAttribute("categoryid", categoryId);
         model.addAttribute("activeListings", listings);
-        return "activelistings";
+        return "home";
     }
 
 }

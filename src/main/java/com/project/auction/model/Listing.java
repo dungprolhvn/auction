@@ -48,6 +48,7 @@ public class Listing {
 
     private boolean isClosed = false;
 
+    @Column(nullable = false, insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
     @Override

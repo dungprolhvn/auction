@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+  <div th:replace="~{layout :: head}"></div>
+  <title>Listing Details</title>
+  <meta name="_csrf" th:content="${_csrf.token}">
+  <meta name="_csrf_header" th:content="${_csrf.headerName}">
+</head>
+<body>
+<div th:replace="~{layout :: navbar}"></div>
+<div th:replace="~{layout :: messages}"></div>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h2 th:text="${listing.name}">Listing Name</h2>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <img class="img-fluid" th:src="${listing.image}" alt="Listing Image">
+            </div>
+            <div class="col-md-6">
+              <h4>Category: <span th:text="${listing.category.name}">Category Name</span></h4>
+              <h4>Starting Price: $<span th:text="${listing.startingBid}">0.00</span></h4>
+              <h4>Created by: <span th:text="${listing.auctioneer.username}">Username</span></h4>
+              <p th:text="${listing.description}">Listing Description</p>
+            </div>
+          </div>
+          <div class="mt-4">
+            <h3>Bids</h3>
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th>Date</th>
+                <th>Username</th>
+                <th>Price</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="bid : ${allBid}">
+                <td th:text="${#dates.format(bid.placedAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</td>
+                <td th:text="${bid.user.username}">Username</td>
+                <td th:text="${bid.bidPrice}">0.00</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer text-right">
+          <button th:unless="${inWatchlist}" th:data-lid="${listing.id}" id="watchlistButton" data-action="add"
+                  class="btn btn-primary">Add to watchlist
+          </button>
+          <button th:if="${inWatchlist}" th:data-lid="${listing.id}" id="watchlistButton" data-action="remove"
+                  class="btn btn-secondary">Remove from watchlist
+          </button>
+          <form th:if="${minBid}" th:action="@{/api/bid/place}" method="post" class="form-inline">
+            <input type="hidden" name="listingId" th:value="${listing.id}">
+            <label for="bidPrice" class="sr-only">Bid Price</label>
+            <input type="number" class="form-control" id="bidPrice" name="bidPrice" placeholder="Enter your bid" th:min="${minBid}" required>
+            <button type="submit" class="btn btn-success mt-2 mb-2">Place Bid</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h3>Comments</h3>
+        </div>
+        <div class="card-footer">
+          <form id="commentForm" th:action="@{/listing/comment}" class="form-inline">
+            <input type="hidden" name="listingId" th:value="${listing.id}">
+            <label for="content" class="sr-only">Post your comment</label>
+            <input type="text" class="form-control" id="content" name="content" placeholder="Your comment" required>
+            <button type="submit" class="btn btn-primary mt-2 mb-2">Post</button>
+          </form>
+        </div>
+        <div id="commentDiv" class="card-body">
+          <div th:each="comment : ${allComment}" class="card mb-2">
+            <div class="card-body">
+              <h5 class="card-title" th:text="${comment.user.username}">Username</h5>
+              <h6 class="card-subtitle mb-2 text-muted" th:text="${comment.publishedAt}">2023-01-01 12:00:00</h6>
+              <p class="card-text" th:text="${comment.content}">Comment content</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:src="@{/script/scripts.js}"></script>
+</body>
+</html>

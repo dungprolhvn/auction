@@ -1,5 +1,6 @@
 package com.project.auction.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -19,6 +20,8 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    // dont try to serialize lazy loaded prop
     @ManyToOne
     @JoinColumn(name = "listing_id", nullable = false)
     private Listing listing;
@@ -30,6 +33,7 @@ public class Comment {
     @Length(min = 5, max = 8096)
     private String content;
 
+    @Column(nullable = false, insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime publishedAt;
 
     @Override

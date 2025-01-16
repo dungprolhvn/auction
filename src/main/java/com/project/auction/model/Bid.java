@@ -29,6 +29,7 @@ public class Bid {
 
     private BigDecimal bidPrice;
 
+    @Column(nullable = false, insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime placedAt;
 
     @Override

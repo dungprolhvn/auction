@@ -7,4 +7,10 @@ import java.util.List;
 
 public interface WatchlistService {
     List<Listing> getWatchlist(User user);
+
+    boolean checkListingInUserWatchlist(User user, Listing listing);
+
+    void addToWatchlist(User currentUser, Long listingId);
+
+    void removeFromWatchlist(User currentUser, Long listingId);
 }
