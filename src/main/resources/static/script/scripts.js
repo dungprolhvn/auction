@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const username = document.createElement('h5');
                 username.setAttribute("class", "card-title");
-                username.textContent = data.user.username;
+                username.textContent = data.username;
 
                 const date = document.createElement('h6');
                 date.setAttribute("class", "card-subtitle mb-2 text-muted");

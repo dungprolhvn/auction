@@ -14,6 +14,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@NoArgsConstructor
 public class Bid {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,12 +22,15 @@ public class Bid {
 
     @ManyToOne
     @JoinColumn(name = "listing_id", nullable = false)
+    @NonNull
     private Listing listing;
 
+    @NonNull
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @NonNull
     private BigDecimal bidPrice;
 
     @Column(nullable = false, insertable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")

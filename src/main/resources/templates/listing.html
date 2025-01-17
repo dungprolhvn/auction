@@ -42,7 +42,7 @@
               </thead>
               <tbody>
               <tr th:each="bid : ${allBid}">
-                <td th:text="${#dates.format(bid.placedAt, 'yyyy-MM-dd HH:mm:ss')}">2023-01-01 12:00:00</td>
+                <td th:text="${bid.placedAt}">2023-01-01 12:00:00</td>
                 <td th:text="${bid.user.username}">Username</td>
                 <td th:text="${bid.bidPrice}">0.00</td>
               </tr>
@@ -57,10 +57,9 @@
           <button th:if="${inWatchlist}" th:data-lid="${listing.id}" id="watchlistButton" data-action="remove"
                   class="btn btn-secondary">Remove from watchlist
           </button>
-          <form th:if="${minBid}" th:action="@{/api/bid/place}" method="post" class="form-inline">
-            <input type="hidden" name="listingId" th:value="${listing.id}">
+          <form th:if="${minBid}" th:action="@{'/listing/' + ${listing.id} + '/bid'}" method="post" class="form-inline">
             <label for="bidPrice" class="sr-only">Bid Price</label>
-            <input type="number" class="form-control" id="bidPrice" name="bidPrice" placeholder="Enter your bid" th:min="${minBid}" required>
+            <input type="number" class="form-control" id="bidPrice" name="bidPrice" placeholder="Enter your bid" th:min="${minBid}" step="0.001" required>
             <button type="submit" class="btn btn-success mt-2 mb-2">Place Bid</button>
           </form>
         </div>

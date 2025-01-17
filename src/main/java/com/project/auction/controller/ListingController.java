@@ -8,13 +8,16 @@ import com.project.auction.service.BidService;
 import com.project.auction.service.CommentService;
 import com.project.auction.service.ListingService;
 import com.project.auction.service.WatchlistService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -22,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@Slf4j
 public class ListingController {
 
     private final ListingService listingService;
@@ -86,10 +90,28 @@ public class ListingController {
         String content = payload.get("content");
         try {
             Comment c = commentService.save(user, listingId, content);
-            return ResponseEntity.ok(c);
+            Map<String, String> response = Map.of(
+                    "username", c.getUser().getUsername(),
+                    "publishedAt", String.valueOf(c.getPublishedAt()),
+                    "content", c.getContent());
+            return ResponseEntity.ok(response);
         }
         catch (DataAccessException de) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bad request");
         }
     }
+
+    @PostMapping("/listing/{id}/bid")
+    public String handleBidPlace(
+            Authentication authentication,
+            @PathVariable("id") Long listingId,
+            @RequestParam("bidPrice") BigDecimal bidValue,
+            RedirectAttributes redirectAttributes) {
+        User currentUser = (User) authentication.getPrincipal();
+        Listing l = listingService.getById(listingId);
+        String result = bidService.saveNewBid(currentUser, l, bidValue);
+        redirectAttributes.addFlashAttribute("successMessage", result);
+        return "redirect:/listing/" + listingId;
+    }
+
 }
