@@ -44,7 +44,7 @@ public class ListingController {
         model.addAttribute(
                 "activeListings",
                 listingService.getAllListings());
-        model.addAttribute("activeListing", true);
+        model.addAttribute("allListing", true);
         return "home";
     }
 
@@ -53,7 +53,7 @@ public class ListingController {
         model.addAttribute(
                 "activeListings",
                 listingService.getActiveListings());
-        model.addAttribute("allListing", true);
+        model.addAttribute("activeListing", true);
         return "home";
     }
 

@@ -12,6 +12,7 @@
 <div class="container mt-4">
   <h2 th:if="${activeListing}">Active Listings</h2>
   <h2 th:if="${allListing}">All listing</h2>
+  <h2 th:if="${searchResult}">Search result:</h2>
   <h2 th:if="${categoryid}" th:text="'Category: ' + ${categoryid}"></h2>
   <div th:each="listing : ${activeListings}" class="row">
     <div class="col-sm-12">
