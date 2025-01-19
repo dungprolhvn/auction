@@ -57,11 +57,18 @@
           <button th:if="${inWatchlist}" th:data-lid="${listing.id}" id="watchlistButton" data-action="remove"
                   class="btn btn-secondary">Remove from watchlist
           </button>
+          <form th:action="@{'/listing/' + ${listing.id} + '/close'}" method="post">
+            <button type="submit" class="btn btn-info mt-3" th:if="${closable}">
+              Close listing
+            </button>
+          </form>
           <form th:if="${minBid}" th:action="@{'/listing/' + ${listing.id} + '/bid'}" method="post" class="form-inline">
             <label for="bidPrice" class="sr-only">Bid Price</label>
             <input type="number" class="form-control" id="bidPrice" name="bidPrice" placeholder="Enter your bid" th:min="${minBid}" step="0.001" required>
             <button type="submit" class="btn btn-success mt-2 mb-2">Place Bid</button>
           </form>
+          <h3 th:if="${listing.closed}">Listing is closed!</h3>
+          <h2 style="color: lawngreen" th:if="${isWinner}">You have won this auction!</h2>
         </div>
       </div>
     </div>

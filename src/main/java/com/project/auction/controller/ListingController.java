@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -40,11 +39,21 @@ public class ListingController {
         this.commentService = commentService;
     }
 
+    @GetMapping("/all-listing")
+    public String allListing(Model model) {
+        model.addAttribute(
+                "activeListings",
+                listingService.getAllListings());
+        model.addAttribute("activeListing", true);
+        return "home";
+    }
+
     @GetMapping("/")
     public String activeListing(Model model) {
         model.addAttribute(
                 "activeListings",
                 listingService.getActiveListings());
+        model.addAttribute("allListing", true);
         return "home";
     }
 
@@ -56,6 +65,10 @@ public class ListingController {
         Listing l = listingService.getById(listingId);
         // add to/remove from watchlist button
         User currentUser = (User) authentication.getPrincipal();
+        // check if listing closable by current user
+        boolean closable = !l.isClosed() && currentUser.equals(l.getAuctioneer());
+        model.addAttribute("closable", closable);
+        //
         boolean inWatchlist = watchlistService.checkListingInUserWatchlist(currentUser, l);
         model.addAttribute("inWatchlist", inWatchlist);
         // get list of bid placed to display
@@ -70,15 +83,22 @@ public class ListingController {
                     .max(Comparator.naturalOrder())
                     .orElse(l.getStartingBid());
             model.addAttribute("minBid", minBid);
-            // TODO: handle bid place logic (race condition)
         }
         // get list of comments to display (handle using REST API)
         List<Comment> comments = commentService.getAllByListing(l);
         model.addAttribute("allComment", comments);
         // add the listing to model
         model.addAttribute("listing", l);
+
+        // check if current user is the winner
+        if (l.isClosed()) {
+            boolean isWinner = currentUser.equals(bids.getFirst().getUser());
+            model.addAttribute("isWinner", isWinner);
+        }
+
         return "listing";
     }
+
 
     @PostMapping(value = "/listing/comment", consumes = "application/json", produces = "application/json")
     @ResponseBody
@@ -110,6 +130,19 @@ public class ListingController {
         User currentUser = (User) authentication.getPrincipal();
         Listing l = listingService.getById(listingId);
         String result = bidService.saveNewBid(currentUser, l, bidValue);
+        redirectAttributes.addFlashAttribute("successMessage", result);
+        return "redirect:/listing/" + listingId;
+    }
+
+
+    @PostMapping("/listing/{id}/close")
+    public String handleListingClose(
+            Authentication authentication,
+            @PathVariable("id") Long listingId,
+            RedirectAttributes redirectAttributes) {
+        User currentUser = (User) authentication.getPrincipal();
+        Listing l = listingService.getById(listingId);
+        String result = listingService.closeListing(currentUser, l);
         redirectAttributes.addFlashAttribute("successMessage", result);
         return "redirect:/listing/" + listingId;
     }

@@ -6,6 +6,8 @@ import com.project.auction.model.User;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 
 public interface BidService {
     List<Bid> getAllBidByListing(Listing l);
@@ -13,4 +15,7 @@ public interface BidService {
     BigDecimal getMinBid(Long listingId);
 
     String saveNewBid(User currentUser, Listing listing, BigDecimal bidValue);
+
+    Lock getLock();
+
 }

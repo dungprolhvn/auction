@@ -11,4 +11,5 @@ public interface ListingRepository extends JpaRepository<Listing, Long> {
     List<Listing> getAllByIsClosedFalse();
 
     List<Listing> getAllByIsClosedFalseAndCategoryId(long id);
+
 }

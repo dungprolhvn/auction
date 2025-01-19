@@ -12,7 +12,7 @@
 	<artifactId>auction</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>auction</name>
-	<description>an eBay-like e-commerce auction site that will allow users to post auction listings, place bids on listings, comment on those listings, and add listings to a watchlist</description>
+	<description>an eBay-like e-commerce auction site that will allow users to post auction listings, place bids on listings</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -80,6 +80,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

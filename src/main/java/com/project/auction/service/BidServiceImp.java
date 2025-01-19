@@ -10,12 +10,16 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 @Slf4j
 public class BidServiceImp implements BidService {
 
     private final BidRepository bidRepository;
+    private final Lock bidLock = new ReentrantLock();
 
     public BidServiceImp(BidRepository bidRepository) {
         this.bidRepository = bidRepository;
@@ -32,24 +36,26 @@ public class BidServiceImp implements BidService {
     }
 
     @Override
-    public synchronized String saveNewBid(User user, Listing listing, BigDecimal bidValue) {
+    public String saveNewBid(User user, Listing listing, BigDecimal bidValue) {
         if (bidValue == null) {
             return "Bid value cannot be null";
         }
-        if (listing.isClosed()) {
-            return "Listing closed";
-        }
-        if (user.equals(listing.getAuctioneer())) {
-            return "Cant place bid on you own listing";
-        }
-        BigDecimal minBid = getMinBid(listing.getId());
-        if (minBid == null) {
-            minBid = listing.getStartingBid();
-        }
-        if (bidValue.compareTo(minBid) <= 0) {
-            return "Your bid must be higher than max bid";
-        }
-        synchronized (this) {
+
+        bidLock.lock();
+        try {
+            if (listing.isClosed()) {
+                return "Listing closed";
+            }
+            if (user.equals(listing.getAuctioneer())) {
+                return "Cant place bid on you own listing";
+            }
+            BigDecimal minBid = getMinBid(listing.getId());
+            if (minBid == null) {
+                minBid = listing.getStartingBid();
+            }
+            if (bidValue.compareTo(minBid) <= 0) {
+                return "Your bid must be higher than max bid";
+            }
             try {
                 Bid b = new Bid(listing, user, bidValue);
                 bidRepository.save(b);
@@ -61,5 +67,12 @@ public class BidServiceImp implements BidService {
                 return "Some error occurred";
             }
         }
+        finally {
+            bidLock.unlock();
+        }
+    }
+
+    public Lock getLock() {
+        return bidLock;
     }
 }
