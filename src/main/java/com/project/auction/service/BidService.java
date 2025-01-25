@@ -6,8 +6,10 @@ import com.project.auction.model.User;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public interface BidService {
     List<Bid> getAllBidByListing(Listing l);
@@ -16,6 +18,6 @@ public interface BidService {
 
     String saveNewBid(User currentUser, Listing listing, BigDecimal bidValue);
 
-    Lock getLock();
+    Map<Long, ReentrantLock> getListingLocks();
 
 }

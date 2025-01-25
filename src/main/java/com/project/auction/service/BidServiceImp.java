@@ -4,12 +4,15 @@ import com.project.auction.model.Bid;
 import com.project.auction.model.Listing;
 import com.project.auction.model.User;
 import com.project.auction.repository.BidRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,7 +22,9 @@ import java.util.concurrent.locks.ReentrantLock;
 public class BidServiceImp implements BidService {
 
     private final BidRepository bidRepository;
-    private final Lock bidLock = new ReentrantLock();
+
+    @Getter
+    private final Map<Long, ReentrantLock> listingLocks = new ConcurrentHashMap<>();
 
     public BidServiceImp(BidRepository bidRepository) {
         this.bidRepository = bidRepository;
@@ -40,8 +45,11 @@ public class BidServiceImp implements BidService {
         if (bidValue == null) {
             return "Bid value cannot be null";
         }
-
-        bidLock.lock();
+        ReentrantLock listingLock = listingLocks.computeIfAbsent(
+                listing.getId(),
+                k -> new ReentrantLock()
+        );
+        listingLock.lock();
         try {
             if (listing.isClosed()) {
                 return "Listing closed";
@@ -68,11 +76,8 @@ public class BidServiceImp implements BidService {
             }
         }
         finally {
-            bidLock.unlock();
+            listingLock.unlock();
         }
     }
 
-    public Lock getLock() {
-        return bidLock;
-    }
 }

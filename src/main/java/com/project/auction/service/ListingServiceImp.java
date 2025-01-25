@@ -7,8 +7,10 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Service
 public class ListingServiceImp implements ListingService {
@@ -58,8 +60,11 @@ public class ListingServiceImp implements ListingService {
             return "User no permisson to close";
         }
         // wait if there is saveNewBid running
-        Lock bidLock = bidService.getLock();
-        bidLock.lock();
+        Map<Long, ReentrantLock> listingLocks = bidService.getListingLocks();
+        ReentrantLock listingLock = listingLocks.computeIfAbsent(
+                l.getId(),
+                k -> new ReentrantLock()
+        );
         try {
             if (l.isClosed()) {
                 return "Listing already closed";
@@ -69,7 +74,7 @@ public class ListingServiceImp implements ListingService {
             return "Listing closed";
         }
         finally {
-            bidLock.unlock();
+            listingLock.unlock();
         }
     }
 }

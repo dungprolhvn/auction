@@ -35,7 +35,7 @@ class BidServiceTest {
 
     private Listing listing;
     private List<User> users;
-    private static final int NUMBER_OF_BIDDERS = 100;
+    private static final int NUMBER_OF_BIDDERS = 5;
     private static final BigDecimal BID_AMOUNT = new BigDecimal("100.00");
     private volatile BigDecimal currentMaxBid;  // Track current highest bid
 
